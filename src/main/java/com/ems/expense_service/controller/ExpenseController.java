@@ -1,0 +1,26 @@
+package com.ems.expense_service.controller;
+
+import com.ems.expense_service.model.dto.ExpenseRequest;
+import com.ems.expense_service.model.dto.ExpenseResponse;
+import com.ems.expense_service.service.ExpenseService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/expenses")
+@RequiredArgsConstructor
+public class ExpenseController {
+    private final ExpenseService expenseService;
+
+    @PostMapping
+    public ResponseEntity<ExpenseResponse> createExpense(
+            @RequestHeader("X-User-Id") Long userId,
+            @Valid @RequestBody ExpenseRequest request) {
+
+        ExpenseResponse response = expenseService.createExpense(userId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+}
