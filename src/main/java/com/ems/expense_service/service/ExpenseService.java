@@ -97,4 +97,13 @@ public class ExpenseService {
         Expense updatedExpense = expenseRepository.save(expense);
         return mapToResponse(updatedExpense);
     }
+
+    @Transactional
+    public void deleteExpense(Long id, Long userId) {
+        Expense expense = expenseRepository.findByIdAndUserIdAndDeletedFalse(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id + " for this user"));
+
+        expense.setDeleted(true);
+        expenseRepository.save(expense);
+    }
 }

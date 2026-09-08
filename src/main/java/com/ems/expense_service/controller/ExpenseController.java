@@ -51,4 +51,12 @@ public class ExpenseController {
         ExpenseResponse response = expenseService.updateExpense(id, userId, request);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteExpense(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long id) {
+        expenseService.deleteExpense(id, userId);
+        return ResponseEntity.noContent().build();
+    }
 }
