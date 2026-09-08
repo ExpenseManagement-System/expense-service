@@ -1,0 +1,16 @@
+INSERT INTO categories (id, name) VALUES
+                                      (1, 'Food & Dining'),
+                                      (2, 'Groceries'),
+                                      (3, 'Transportation'),
+                                      (4, 'Shopping'),
+                                      (5, 'Bills & Utilities'),
+                                      (6, 'Rent & Housing'),
+                                      (7, 'Healthcare'),
+                                      (8, 'Entertainment'),
+                                      (9, 'Travel'),
+                                      (10, 'Education'),
+                                      (11, 'Personal Care'),
+                                      (12, 'Subscriptions'),
+                                      (13, 'Insurance'),
+                                      (14, 'Gifts & Donations'),
+                                      (15, 'Other');

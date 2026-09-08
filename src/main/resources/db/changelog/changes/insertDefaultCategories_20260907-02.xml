@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="002-insert-default-categories-sql" author="akanksha">
+        <sqlFile path="db/changelog/changes/sql/insert-categories.sql"/>
+        <rollback>
+            DELETE FROM categories WHERE id BETWEEN 1 AND 15;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

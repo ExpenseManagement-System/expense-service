@@ -1,3 +1,25 @@
 spring:
   application:
     name: expense-service
+
+  datasource:
+    url: ${expense_DB_URL}
+    username: ${expense_DB_USERNAME}
+    password: ${expense_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+    enabled: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+
+server:
+  servlet:
+    context-path: /ems
+  port: 8081
