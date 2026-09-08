@@ -23,4 +23,12 @@ public class ExpenseController {
         ExpenseResponse response = expenseService.createExpense(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("{expenseId}")
+    public ResponseEntity<ExpenseResponse> getExpenseById(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long expenseId){
+        ExpenseResponse response = expenseService.getExpenseById(userId, expenseId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
