@@ -2,13 +2,20 @@ package com.ems.expense_service.controller;
 
 import com.ems.expense_service.model.dto.ExpenseRequest;
 import com.ems.expense_service.model.dto.ExpenseResponse;
+import com.ems.expense_service.model.dto.PagedResponse;
 import com.ems.expense_service.service.ExpenseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,12 +41,19 @@ public class ExpenseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ExpenseResponse>> getAllExpenses(
-            @RequestHeader("X-User-Id") Long userId) {
 
-        List<ExpenseResponse> expenses = expenseService.getAllExpenses(userId);
-        return ResponseEntity.ok(expenses);
+    @GetMapping
+    public ResponseEntity<PagedResponse<ExpenseResponse>> getExpenses(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @PageableDefault(page = 0, size = 10, sort = "expenseDate", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        PagedResponse<ExpenseResponse> response = expenseService.getExpenses(
+                userId, categoryId, startDate, endDate, pageable
+        );
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

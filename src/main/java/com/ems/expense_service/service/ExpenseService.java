@@ -4,14 +4,20 @@ import com.ems.expense_service.exception.ResourceNotFoundException;
 import com.ems.expense_service.model.dto.CategoryDto;
 import com.ems.expense_service.model.dto.ExpenseRequest;
 import com.ems.expense_service.model.dto.ExpenseResponse;
+import com.ems.expense_service.model.dto.PagedResponse;
 import com.ems.expense_service.model.entity.Category;
 import com.ems.expense_service.model.entity.Expense;
 import com.ems.expense_service.repository.CategoryRepository;
 import com.ems.expense_service.repository.ExpenseRepository;
+import com.ems.expense_service.specification.ExpenseSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,11 +72,22 @@ public class ExpenseService {
         return mapToResponse(expense);
     }
 
+
     @Transactional(readOnly = true)
-    public List<ExpenseResponse> getAllExpenses(Long userId) {
-        return expenseRepository.findAllByUserIdAndDeletedFalse(userId)
-                .stream().map(this::mapToResponse)
-                .toList();
+    public PagedResponse<ExpenseResponse> getExpenses(
+            Long userId,
+            Long categoryId,
+            LocalDate startDate,
+            LocalDate endDate,
+            Pageable pageable
+    ) {
+        Specification<Expense> spec = ExpenseSpecification.buildSpecification(userId, categoryId, startDate, endDate);
+
+        Page<Expense> expensePage = expenseRepository.findAll(spec, pageable);
+
+        // Map Page<Expense> -> Page<ExpenseResponse>
+        Page<ExpenseResponse> responsePage =  expensePage.map(this::mapToResponse);
+        return PagedResponse.from(responsePage);
     }
 
     @Transactional
