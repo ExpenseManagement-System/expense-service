@@ -31,7 +31,7 @@ public class ExpenseController {
             @RequestHeader("X-User-Id") Long userId,
             @PathVariable Long expenseId){
         ExpenseResponse response = expenseService.getExpenseById(userId, expenseId);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
@@ -40,5 +40,15 @@ public class ExpenseController {
 
         List<ExpenseResponse> expenses = expenseService.getAllExpenses(userId);
         return ResponseEntity.ok(expenses);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ExpenseResponse> updateExpense(
+            @PathVariable Long id,
+            @RequestHeader("X-User-Id") Long userId,
+            @Valid @RequestBody ExpenseRequest request) {
+
+        ExpenseResponse response = expenseService.updateExpense(id, userId, request);
+        return ResponseEntity.ok(response);
     }
 }

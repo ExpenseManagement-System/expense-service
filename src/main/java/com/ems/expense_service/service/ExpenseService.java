@@ -72,4 +72,29 @@ public class ExpenseService {
                 .stream().map(this::mapToResponse)
                 .toList();
     }
+
+    @Transactional
+    public ExpenseResponse updateExpense(Long id, Long userId, ExpenseRequest request) {
+        // Fetch expense and verify user ownership + non-deleted status
+        Expense expense = expenseRepository.findByIdAndUserIdAndDeletedFalse(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id + " for this user"));
+
+        // If category is updated. Fetch it from db and update if present.
+        if(!(expense.getCategory().getId().equals(request.categoryId()))){
+            Category category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Category not found with id: "+ request.categoryId()));
+            expense.setCategory(category);
+        }
+        // Update other expense fields
+        expense.setMerchant(request.merchant());
+        expense.setAmount(request.amount());
+        expense.setExpenseDate(request.expenseDate());
+        expense.setDescription(request.description());
+        expense.setPaymentMethod(request.paymentMethod());
+
+        // Save updated entity (updatedAt timestamp automatically managed by Hibernate)
+        Expense updatedExpense = expenseRepository.save(expense);
+        return mapToResponse(updatedExpense);
+    }
 }
