@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/expenses")
 @RequiredArgsConstructor
@@ -30,5 +32,13 @@ public class ExpenseController {
             @PathVariable Long expenseId){
         ExpenseResponse response = expenseService.getExpenseById(userId, expenseId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ExpenseResponse>> getAllExpenses(
+            @RequestHeader("X-User-Id") Long userId) {
+
+        List<ExpenseResponse> expenses = expenseService.getAllExpenses(userId);
+        return ResponseEntity.ok(expenses);
     }
 }
